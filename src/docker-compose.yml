@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: fleet-reservation-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fleet_reservation
+      POSTGRES_USER: fleet_dev
+      POSTGRES_PASSWORD: fleet_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - fleet-reservation-pgdata:/var/lib/postgresql/data
+
+volumes:
+  fleet-reservation-pgdata:
