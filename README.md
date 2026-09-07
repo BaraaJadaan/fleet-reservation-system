@@ -68,12 +68,12 @@ This repository includes standalone interactive documentation to review decision
 
 2. **Start the database:**
    ```bash
-   cd src
    docker compose up -d
    ```
 
 3. **Restore and run the API:**
    ```bash
+   cd src
    dotnet restore
    dotnet build
    dotnet run --project FleetReservation.Api

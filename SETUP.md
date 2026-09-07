@@ -35,7 +35,7 @@ Pick one:
 ## 3. Postgres, via Docker
 
 Install Docker Desktop (Windows/Mac) or Docker Engine (Linux). Then, from this project's
-`src/` folder:
+root folder:
 ```
 docker compose up -d
 ```

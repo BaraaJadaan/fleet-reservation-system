@@ -266,6 +266,66 @@
       </div>
     </article>
 
+    <article class="entry" data-phase="Domain modeling &amp; EF Core setup">
+      <p class="eyebrow">ENTRY <span class="num"></span> · Domain modeling &amp; EF Core setup</p>
+      <h2 class="term">Enum Storage: String vs. Integer Mapping</h2>
+      <p class="explain">
+        In C#, an enum is backed by an underlying integer by default (0, 1, 2...). When EF Core maps an enum property to a relational database, its default behavior is saving that integer directly into an INT column. However, using `.HasConversion<string>()` in EF Core instructs the model mapper to serialize enum values as their exact string names ('Available', 'Reserved') when writing to the database, and parse them back to the strongly-typed enum when querying.
+      </p>
+      <div class="why">
+        <p class="label">Why it mattered here</p>
+        <p>Storing integers is fragile: if a developer later inserts a new enum member in the middle or reorders the members, every existing row in the database silently points to the wrong domain status without throwing an error. Storing strings guarantees readability in raw SQL tools (pgAdmin, psql) and immune refactoring safety.</p>
+      </div>
+      <div class="versus">
+        <p class="label">vs. Integer Enum Mapping</p>
+        <p>Integer mapping saves a few bytes of storage per row and indexes marginally faster, but introduces severe silent-corruption risks during long-term schema evolution and makes raw SQL inspection obscure.</p>
+      </div>
+    </article>
+
+    <article class="entry" data-phase="Domain modeling &amp; EF Core setup">
+      <p class="eyebrow">ENTRY <span class="num"></span> · Domain modeling &amp; EF Core setup</p>
+      <h2 class="term">EF Core Navigation Properties &amp; Nullable Reference Types</h2>
+      <p class="explain">
+        Navigation properties in EF Core represent foreign-key relationships directly on domain classes. Instead of manually joining raw IDs, a Vehicle entity exposes an `ICollection<Reservation>` property representing all related child records. In modern C# with Nullable Reference Types enabled (`#nullable enable`), non-nullable string and collection properties must be initialized (e.g. `= string.Empty;` or `= new List<Reservation>();`) to eliminate NullReferenceExceptions at compile time.
+      </p>
+      <div class="why">
+        <p class="label">Why it mattered here</p>
+        <p>Initializing collection navigation properties to an empty list ensures that querying a Vehicle with no reservations yields an empty collection instead of null, preventing defensive null-checks throughout the service layer. Using the interface `ICollection<T>` rather than a concrete `List<T>` allows EF Core's change tracker to inject its own proxy or notification collections if needed.</p>
+      </div>
+    </article>
+
+    <article class="entry" data-phase="Domain modeling &amp; EF Core setup">
+      <p class="eyebrow">ENTRY <span class="num"></span> · Domain modeling &amp; EF Core setup</p>
+      <h2 class="term">Object-Relational Mapping (ORM) &amp; EF Core</h2>
+      <p class="explain">
+        An ORM (Object-Relational Mapper) is a software layer that translates between object-oriented code (C# classes, properties, collections) and relational database structures (SQL tables, columns, foreign keys). Entity Framework Core (EF Core) is Microsoft's official modern ORM for .NET. Instead of writing manual SQL strings (`SELECT * FROM vehicles`) and manually mapping database result sets into C# objects, EF Core lets developers query and persist data using strongly-typed C# LINQ syntax.
+      </p>
+      <div class="why">
+        <p class="label">Why it mattered here</p>
+        <p>EF Core manages schema migrations, connection pooling, SQL generation, and change tracking out of the box, drastically reducing boilerplate data-access code and eliminating common SQL injection vulnerabilities while keeping our domain logic in pure C#.</p>
+      </div>
+      <div class="versus">
+        <p class="label">vs. Raw ADO.NET / Micro-ORMs (Dapper)</p>
+        <p>Raw ADO.NET and micro-ORMs like Dapper offer maximum query execution performance and explicit raw SQL control, but require writing and maintaining all SQL schemas, joins, and parameter mappings by hand.</p>
+      </div>
+    </article>
+
+    <article class="entry" data-phase="Domain modeling &amp; EF Core setup">
+      <p class="eyebrow">ENTRY <span class="num"></span> · Domain modeling &amp; EF Core setup</p>
+      <h2 class="term">PostgreSQL UTC Timestamps (`timestamptz`) &amp; Npgsql</h2>
+      <p class="explain">
+        PostgreSQL provides two main timestamp types: `timestamp without time zone` (`timestamp`) and `timestamp with time zone` (`timestamptz`). In modern backend architecture, all server-side dates (such as reservation start and end times) should be stored in Universal Coordinated Time (UTC). The Npgsql EF Core provider strictly enforces this: if you pass a C# `DateTime` whose `.Kind` property is `Unspecified` or `Local`, Npgsql throws a runtime exception to prevent timezone-shift bugs.
+      </p>
+      <div class="why">
+        <p class="label">Why it mattered here</p>
+        <p>Reservations and maintenance windows deal with time-overlap logic across potentially different timezones. Storing all dates in UTC guarantees unambiguous intervals and deterministic overlap comparison queries in SQL.</p>
+      </div>
+      <div class="versus">
+        <p class="label">vs. Local Time / Timestamp without Timezone</p>
+        <p>Storing local timestamps leads to catastrophic bugs during daylight saving transitions and makes comparing times from users in different timezones impossible without error-prone client-side conversions.</p>
+      </div>
+    </article>
+
     <!-- NEW_ENTRY_INSERTION_POINT: insert new <article class="entry"> blocks immediately above this line, in the order concepts were introduced. -->
   </main>
 

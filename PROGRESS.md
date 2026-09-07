@@ -13,6 +13,15 @@ Reservation domain forces a real state machine (available → reserved → check
 - Keep logging concepts/questions/friction the moment they happen — don't batch it for later, even across the session boundary.
 - Phase roadmap checkboxes below track *verified working*, not *decided*. Phase 2's decisions are genuinely locked and already reflected in the scaffold and companion docs; it's left unchecked only because it hasn't run on real hardware yet.
 
+## Familiarity calibration
+- **Domain/industry:** Intermediate/High — understands core backend concepts, state machines, and relational modeling.
+- **Tools/practices:** Low (Learning) — new to C# / .NET 10, EF Core 10, and PostgreSQL provider conventions. Explicitly requests syntax and mechanics explanations.
+- **Coding fundamentals:** Intermediate — comfortable with programming concepts, but wants C# syntax, type safety, and SQL translation explained thoroughly.
+
+## Verification agreement
+- Retrieval practice during check-ins: Active (default on)
+- Wrap-up mock interview: Active (default on)
+
 ## Phase roadmap
 - [x] Phase 1 — Environment & tooling setup
 - [x] Phase 2 — Core architecture decisions
@@ -29,8 +38,8 @@ _Real things that didn't work on the first try, logged the moment they happen �
 _(none yet)_
 
 ## Companion docs
-- `concepts.html` — 2 entries
-- `interview_qa.html` — 3 questions
+- `concepts.html` — 6 entries
+- `interview_qa.html` — 6 questions
 - `walkthrough.html` — 2 phase beats
 
 ## Mock interview weak spots
